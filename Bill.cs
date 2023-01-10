@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -107,7 +107,7 @@ namespace SampleFrameworks
                 try
                 {
             RETRY:
-                int resp = Utilities.GetNumber("enter 0 to generate bill /nEnter 1 to continue with adding");
+                int resp = Utilities.GetNumber("enter 0 to generate bill \nEnter 1 to continue with adding");
                 if (resp == 1) x = true;
                 else if (resp == 0) x = false;
                 else {
