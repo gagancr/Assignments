@@ -23,38 +23,37 @@ namespace SampleFrameworks
         public int UnitPrice;
         
             
-      static public Item[] ar = new Item[8];
+      static public Item[] ar = new Item[10];
         
-
-
-    }
-    class MiddleClass
-    {
-        static void BillSetter()
+       public static void BillSetter()
         {
-            Item.ar[0] = new Item { Particulars = "sugar", UnitPrice = 40 };
-            Item.ar[1] = new Item { Particulars = "salt", UnitPrice = 20 };
-            Item.ar[2] = new Item { Particulars = "dal", UnitPrice = 70 };
-            Item.ar[3] = new Item { Particulars = "soap", UnitPrice = 10 };
-            Item.ar[4] = new Item { Particulars = "shampoo", UnitPrice = 5 };
-            Item.ar[5] = new Item { Particulars = "brush", UnitPrice = 45 };
-            Item.ar[6] = new Item { Particulars = "pen", UnitPrice = 15 };
-            Item.ar[7] = new Item { Particulars = "book", UnitPrice = 35 };
+            ar[0] = new Item { Particulars = "Sugar", UnitPrice = 40 };
+            ar[1] = new Item { Particulars = "Salt", UnitPrice = 20 };
+            ar[2] = new Item { Particulars = "Dal", UnitPrice = 70 };
+            ar[3] = new Item { Particulars = "Soap", UnitPrice = 10 };
+            ar[4] = new Item { Particulars = "Shampoo", UnitPrice = 5 };
+            ar[5] = new Item { Particulars = "Brush", UnitPrice = 45 };
+            ar[6] = new Item { Particulars = "Pen", UnitPrice = 15 };
+            ar[7] = new Item { Particulars = "Book", UnitPrice = 35 };
+            ar[8] = new Item { Particulars = "FaceWash", UnitPrice = 90 };
+            ar[9] = new Item { Particulars = "Perfume", UnitPrice = 220 };
 
             int id = 110;
             foreach (var item in Item.ar)
             {
                 item.id = id++; 
             }
-
         }
+   }
+    class MiddleClass
+    {
         public void BillGenerator()
         {
-            BillSetter();
+            Item.BillSetter();
             
-            string name = Utilities.Prompt("Enter the name of the customer");
+            string name = Utilities.Prompt("Enter the name of the Customer");
             Console.WriteLine();
-            Console.WriteLine("enter the items from following ids");
+            Console.WriteLine("Enter the items from following ids");
             Bill Newbill = new Bill { BillHolder = name };
             foreach (var item in Item.ar)
             {
@@ -63,11 +62,11 @@ namespace SampleFrameworks
             Console.WriteLine();
             bool x = true;
             int bill = 0;
+            
             ArrayList Listid = new ArrayList();
             ArrayList Listquantity = new ArrayList();
             do
             {
-
                 bool enteredval = false;
 
             RETRYING:
@@ -75,14 +74,15 @@ namespace SampleFrameworks
                 try
                 {
 
-                    enteredId = Utilities.GetNumber("enter the id you want to add");
+                    enteredId = Utilities.GetNumber("Enter the id of the item you want to add");
+
                 }
                 catch (Exception)
                 {
-
                     Console.WriteLine("Enter valid id");
                     goto RETRYING;
                 }
+               
                 foreach (var item in Item.ar)
                 {
                     if (item.id == enteredId)
@@ -97,13 +97,22 @@ namespace SampleFrameworks
                     Console.WriteLine("Enter valid id ");
                     goto RETRYING;
                 }
+                Console.WriteLine("Unit price of "+ NameOfParticular(enteredId)+" " + BillAdder(enteredId));
+
+                int enteredQuantity = Utilities.GetNumber("enter the quantity");
+                if (Listid.Contains(enteredId))
+                {
+                    int index=  Listid.IndexOf(enteredId);
+                    
+                    int temp = (int)Listquantity[index]+enteredQuantity;
+                    Listquantity.Insert(index, temp);
+                    goto HERE;
+                }
                 Listid.Add(enteredId);
-            int enteredQuantity = Utilities.GetNumber("enter the quantity");
-              
-           
-            Listquantity.Add(enteredQuantity);
+                Listquantity.Add(enteredQuantity);
             
-            bill += BillAdder(enteredId) * enteredQuantity;
+           // bill += BillAdder(enteredId) * enteredQuantity;
+            HERE:
                 try
                 {
             RETRY:
@@ -114,16 +123,15 @@ namespace SampleFrameworks
                     Console.WriteLine("Invalid entry");
                     goto RETRY;
                         }
-
                 }
                 catch (Exception)
                 {
-
                      Console.WriteLine("Invalid entry");
                 }
 
             } while (x);
             Console.Clear();
+          
             Newbill.BillAmount = bill;
             Console.WriteLine("----------------------------------------------------");
             Console.WriteLine("Bill Number "+Newbill.BillNo);
@@ -132,13 +140,15 @@ namespace SampleFrameworks
             Console.WriteLine("_____________________________________________________");
 
 
-            Console.WriteLine("id\tName\tPrice\tQuantity   Total ");
+            Console.WriteLine("sl.no\tid  Particulars\tPrice\tQuantity   Total ");
             Console.WriteLine("----------------------------------------------------");
             int count = 0;
 
-
+            int tempBill = 0;
+             bill = 0;
             foreach (int item in Listid)
             {
+                Console.Write(count+1+"\t");
                 Console.Write(item + "  ");
 
                 Console.Write(NameOfParticular(item) + "\t");
@@ -146,18 +156,20 @@ namespace SampleFrameworks
                 Console.Write(BillAdder(item) + "\t");
 
                 Console.Write(Listquantity[count] + "\t");
-
-                Console.Write(BillAdder(item) * (int)Listquantity[count]);
+                tempBill =(BillAdder(item) * (int)Listquantity[count]);
+                Newbill.BillAmount += tempBill;
+                Console.Write("    "+tempBill);
                 Console.WriteLine();
 
                 count++;
             }
+           
             Console.WriteLine("_____________________________________________________");
-            Console.WriteLine("Total Bill "+ Newbill.BillAmount);
+            Console.WriteLine("Total Bill Amout                             Rs: "+ Newbill.BillAmount);
+            Console.WriteLine("_____________________________________________________");
+            Console.WriteLine("                 Thank You !!!! \n                 Visit Us Again...");
 
         }
-
-       
         public int BillAdder(int id )
         {
            
@@ -167,7 +179,6 @@ namespace SampleFrameworks
                 {
                     return Item.ar[i].UnitPrice;
                 }
-               
             }
             return 0;
         }
@@ -192,6 +203,5 @@ namespace SampleFrameworks
             MiddleClass m = new MiddleClass();
             m.BillGenerator();
         }
-
     }
 }
